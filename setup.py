@@ -3,14 +3,20 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-try:
-    from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-    class bdist_wheel(_bdist_wheel):
-        def finalize_options(self):
-            _bdist_wheel.finalize_options(self)
-            self.root_is_pure = False
-except ImportError:
-    bdist_wheel = None
+# try:
+#     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+#     class bdist_wheel(_bdist_wheel):
+#         def finalize_options(self):
+#             _bdist_wheel.finalize_options(self)
+#             self.root_is_pure = False
+# except ImportError:
+#     bdist_wheel = None
+
+class BinaryDistribution(setuptools.dist.Distribution):
+    """Distribution which always forces a binary package with platform name"""
+    def has_ext_modules(foo):
+        return True
+
 
 setuptools.setup(
     name="pytvm",
@@ -30,6 +36,7 @@ setuptools.setup(
     ],
     url="https://github.com/yungwine/pytvm",
     python_requires='>=3.9',
-    py_modules=["pyraptorq"],
-    cmdclass={'bdist_wheel': bdist_wheel},
+    py_modules=["pytvm"],
+    # cmdclass={'bdist_wheel': bdist_wheel},
+    distclass=BinaryDistribution
 )
