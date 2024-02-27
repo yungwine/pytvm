@@ -18,14 +18,7 @@ jobs:
               file: libemulator-mac-x86-64.dylib
             - os: macos-14
               file: libemulator-mac-x86-64.dylib
-#
-#        os: [ubuntu-20.04, windows-2019, macos-11]
-#        file: [libemulator-linux-x86_64.so, libemulator.dll, libemulator-mac-x86-64.dylib]
-#        link: [
-#          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
-#          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
-#          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }}
-#        ]
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
@@ -39,12 +32,8 @@ jobs:
           curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/neodix42/ton/releases/latest/download/${{ matrix.file }}
 
       - name: Build wheels
-#        uses: pypa/build
-#        env:
-#          CIBW_PLATFORM_LINUX: manylinux_2_24_x86_64
-#          CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
-#          CIBW_ARCHS_MACOS: x86_64 universal2 arm64
         run: |
+          python -m pip install --upgrade pip
           pip install build
           python -m build --wheel
 
