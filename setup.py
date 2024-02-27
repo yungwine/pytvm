@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 try:
     from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
     class bdist_wheel(_bdist_wheel):
-        plat_name = 'manylinux2014_x86_64'
+        plat_name = 'manylinux_x86_64'
 
         def finalize_options(self):
             _bdist_wheel.finalize_options(self)
