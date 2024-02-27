@@ -40,15 +40,18 @@ jobs:
           curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/neodix42/ton/releases/latest/download/${{ matrix.file }}
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.1
-        env:
-          CIBW_PLATFORM_LINUX: manylinux_2_24_x86_64
+#        uses: pypa/build
+#        env:
+#          CIBW_PLATFORM_LINUX: manylinux_2_24_x86_64
 #          CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
 #          CIBW_ARCHS_MACOS: x86_64 universal2 arm64
+        run: |
+          pip install build
+          python -m build --wheel
 
       - uses: actions/upload-artifact@v2
         with:
-          path: ./wheelhouse/*.whl
+          path: ./dist/*.whl
 
   build_sdist:
     name: Build source distribution
