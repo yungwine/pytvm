@@ -39,6 +39,6 @@ setuptools.setup(
     url="https://github.com/yungwine/pytvm",
     python_requires='>=3.9',
     py_modules=["pytvm"],
-    cmdclass={'bdist_wheel': bdist_wheel},
+    # cmdclass={'bdist_wheel': bdist_wheel},
     distclass=BinaryDistribution
 )
