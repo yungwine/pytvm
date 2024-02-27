@@ -12,13 +12,12 @@ jobs:
         include:
             - os: ubuntu-latest
               file: libemulator-linux-x86_64.so
-#              link: ''
             - os: windows-latest
               file: libemulator.dll
-#              link: ''
             - os: macos-13
               file: libemulator-mac-x86-64.dylib
-#              link: ''
+            - os: macos-14
+              file: libemulator-mac-x86-64.dylib
 #
 #        os: [ubuntu-20.04, windows-2019, macos-11]
 #        file: [libemulator-linux-x86_64.so, libemulator.dll, libemulator-mac-x86-64.dylib]
