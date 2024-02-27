@@ -1,0 +1,69 @@
+name: Build and upload to PyPI
+
+on: [push, pull_request]
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macos-11]
+        file: [libemulator-linux-x86_64.so, libemulator.dll, libemulator-mac-x86-64.dylib]
+        link: [
+          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
+          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
+          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }}
+        ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
+      - name: Download prebuilt  # https://github.com/disintar/tonpy/blob/main/.github/workflows/wheels.yml#L108
+        run: |
+          curl -Lo ./pytvm/engine/${{ matrix.file }} ${{ matrix.link }}${{ matrix.file }}
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.16.1
+#        env:
+#          CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
+#          CIBW_ARCHS_MACOS: x86_64 universal2 arm64
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build sdist
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
+
+  upload_pypi:
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+#    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
