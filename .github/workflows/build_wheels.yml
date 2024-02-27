@@ -10,13 +10,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-            - os: Linux
+            - os: ubuntu-20.04
               file: libemulator-linux-x86_64.so
 #              link: ''
             - os: windows-2019
               file: libemulator.dll
 #              link: ''
-            - os: macOS
+            - os: macos-11
               file: libemulator-mac-x86-64.dylib
 #              link: ''
 #
