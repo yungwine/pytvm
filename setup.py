@@ -40,5 +40,5 @@ setuptools.setup(
     python_requires='>=3.9',
     py_modules=["pytvm"],
     cmdclass={'bdist_wheel': bdist_wheel},
-    # distclass=BinaryDistribution
+    distclass=BinaryDistribution
 )
