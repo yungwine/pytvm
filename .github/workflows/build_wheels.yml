@@ -36,7 +36,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install build wheel auditwheel
           python -m build --wheel
-          python3 -m auditwheel repair dist/$(ls build)
+
+      - name: Repair wheels
+        if: runner.os == 'Linux'
+        run: |
+          ls dist
+          python3 -m auditwheel repair dist/$(ls dist | grep .whl)
 
       - uses: actions/upload-artifact@v2
         with:
