@@ -48,6 +48,7 @@ jobs:
         if: runner.os != 'Linux'
         with:
           path: ./dist/*.whl
+
       - uses: actions/upload-artifact@v2
         if: runner.os == 'Linux'
         with:
@@ -63,6 +64,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install build
+          python -m build --sdist
 
       - uses: actions/upload-artifact@v2
         with:
