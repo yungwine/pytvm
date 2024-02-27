@@ -3,6 +3,7 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+
 from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 class bdist_wheel(_bdist_wheel):
     plat_name = 'manylinux2014_x86_64'
@@ -37,9 +38,9 @@ setuptools.setup(
     url="https://github.com/yungwine/pytvm",
     python_requires='>=3.9',
     py_modules=["pytvm"],
-    cmdclass={'bdist_wheel': bdist_wheel},
+    # cmdclass={'bdist_wheel': bdist_wheel},
     install_requires=[
         "pytoniq-core>=0.1.31",
-    ]
-    # distclass=BinaryDistribution
+    ],
+    distclass=BinaryDistribution
 )
