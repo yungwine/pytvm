@@ -42,7 +42,7 @@ jobs:
         run: |
           ls dist
           python3 -m auditwheel show dist/$(ls dist | grep .whl)
-          python3 -m auditwheel repair dist/$(ls dist | grep .whl) --plat manylinux2014_x86_64
+          python3 -m auditwheel repair dist/$(ls dist | grep .whl) --plat manylinux_2_27_x86_64
 
       - uses: actions/upload-artifact@v2
         with:
