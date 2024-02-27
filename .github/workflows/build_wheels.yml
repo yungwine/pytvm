@@ -9,13 +9,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-11]
-        file: [libemulator-linux-x86_64.so, libemulator.dll, libemulator-mac-x86-64.dylib]
-        link: [
-          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
-          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
-          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }}
-        ]
+        include:
+            - os: ubuntu-20.04
+              file: libemulator-linux-x86_64.so
+#              link: ''
+            - os: windows-2019
+              file: libemulator.dll
+#              link: ''
+            - os: macos-11
+              file: libemulator-mac-x86-64.dylib
+#              link: ''
+#
+#        os: [ubuntu-20.04, windows-2019, macos-11]
+#        file: [libemulator-linux-x86_64.so, libemulator.dll, libemulator-mac-x86-64.dylib]
+#        link: [
+#          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
+#          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }},
+#          'https://github.com/neodix42/ton/releases/latest/download/' + ${{ matrix.file }}
+#        ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
@@ -26,7 +37,7 @@ jobs:
 
       - name: Download prebuilt  # https://github.com/disintar/tonpy/blob/main/.github/workflows/wheels.yml#L108
         run: |
-          curl -Lo ./pytvm/engine/${{ matrix.file }} ${{ matrix.link }}${{ matrix.file }}
+          curl -Lo ./pytvm/engine/${{ matrix.file }} 'https://github.com/neodix42/ton/releases/latest/download/'${{ matrix.file }}
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.1
