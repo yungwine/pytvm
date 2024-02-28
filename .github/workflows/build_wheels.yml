@@ -14,19 +14,14 @@ jobs:
         include:
           - os: ubuntu-latest
             file: libemulator-linux-x86_64.so
-            arch: x86_64
 #          - os: windows-2019
 #            file: libemulator.dll
-#            arch: x86_64
           - os: windows-latest
             file: libemulator.dll
-            arch: x86_64
           - os: macos-13
             file: libemulator-mac-x86-64.dylib
-            arch: x86_64
           - os: macos-14
-            file: libemulator-mac-x86-64.dylib
-            arch: arm64
+            file: libemulator-mac-arm64.dylib
 
     steps:
       - uses: actions/checkout@v3
@@ -58,6 +53,18 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install build wheel
           python3 -m build --wheel --sdist
+
+      - name: Patch MacOs14 wheelnames
+        if: matrix.os == 'macos-14'
+        run: |
+          brew install rename
+          rename 's/universal2/arm64/' dist/*
+
+      - name: Patch MacOs13 wheelnames
+        if: matrix.os == 'macos-13' # todo check arch, not os
+        run: |
+          brew install rename
+          rename 's/universal2/x86_64/' dist/*
 
       - name: Repair wheels
         if: runner.os == 'Linux'
