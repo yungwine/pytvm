@@ -53,7 +53,13 @@ jobs:
         run: |
           ls dist
           export FILE=$(pwd)/dist/$(ls dist | grep .whl)
-          echo $FILE
+          
+          if [ -f "$FILE" ]; then
+            echo "$FILE exists."
+          else
+            echo "$FILE does not exist."
+          fi
+          
           pip install auditwheel
           python3 -m auditwheel show $FILE
           python3 -m auditwheel repair $FILE --plat manylinux_2_27_x86_64
