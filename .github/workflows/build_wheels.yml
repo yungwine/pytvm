@@ -55,8 +55,8 @@ jobs:
           export FILE=$(pwd)/dist/$(ls dist | grep .whl)
           echo $FILE
           pip install auditwheel
-          python -m auditwheel show $FILE
-          python -m auditwheel repair $FILE --plat manylinux_2_27_x86_64
+          python3 -m auditwheel show $FILE
+          python3 -m auditwheel repair $FILE --plat manylinux_2_27_x86_64
 
       - uses: actions/upload-artifact@v2
         if: runner.os != 'Linux'
