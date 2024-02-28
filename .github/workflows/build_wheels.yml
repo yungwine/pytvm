@@ -36,7 +36,7 @@ jobs:
           curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/neodix42/ton/releases/latest/download/${{ matrix.file }}
 
       - uses: actions/checkout@v3
-#        if: runner.os != 'Linux'
+        if: runner.os != 'Linux'
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
