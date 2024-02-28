@@ -51,6 +51,8 @@ class TvmEmulator:
         stack = VmStack.serialize(stack)
         res = self.raw_run_get_method(method, stack)
         res['stack'] = VmStack.deserialize(Slice.one_from_boc(res['stack']))
+        if 'gas_used' in res:
+            res['gas_used'] = int(res['gas_used'])
         return res
 
     def raw_send_external_message(self, message: Cell):
@@ -62,6 +64,8 @@ class TvmEmulator:
         res['new_code'] = b64_to_cell(res['new_code'])
         res['new_data'] = b64_to_cell(res['new_data'])
         res['actions'] = OutList.deserialize(Slice.one_from_boc(res['actions'])) if res['actions'] else []
+        if 'gas_used' in res:
+            res['gas_used'] = int(res['gas_used'])
         return res
 
     def raw_send_internal_message(self, message: Cell, amount: int):
@@ -73,6 +77,8 @@ class TvmEmulator:
         res['new_code'] = b64_to_cell(res['new_code'])
         res['new_data'] = b64_to_cell(res['new_data'])
         res['actions'] = OutList.deserialize(Slice.one_from_boc(res['actions']))
+        if 'gas_used' in res:
+            res['gas_used'] = int(res['gas_used'])
         return res
 
     def __del__(self):
