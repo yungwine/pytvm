@@ -36,6 +36,7 @@ jobs:
           curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/neodix42/ton/releases/latest/download/${{ matrix.file }}
 
       - uses: actions/checkout@v3
+        if: runner.os != 'Linux'
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
@@ -51,8 +52,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           ls dist
-          echo $(ls dist | grep .whl)
           pip install auditwheel
+          python3 -m auditwheel show dist/$(ls dist | grep .whl)
           python3 -m auditwheel repair dist/$(ls dist | grep .whl) --plat manylinux_2_27_x86_64
 
       - uses: actions/upload-artifact@v2
