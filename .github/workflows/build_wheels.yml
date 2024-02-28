@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-13, macos-14]
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9"]
         include:
           - os: ubuntu-latest
             file: libemulator-linux-x86_64.so
@@ -50,6 +50,13 @@ jobs:
         if: (matrix.os == 'macos-14') && (matrix.python-version == '3.9')
 
       - name: Build wheels
+        if: matrix.os != 'windows-latest'
+        run: |
+          python3${{ matrix.python-version }} -m pip install --upgrade pip
+          pip install build wheel
+          python3${{ matrix.python-version }} -m build --wheel --sdist
+      - name: Build wheels on windows
+        if: matrix.os == 'windows-latest'
         run: |
           python3 -m pip install --upgrade pip
           pip install build wheel
