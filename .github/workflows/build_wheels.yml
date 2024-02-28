@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build wheels on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -39,7 +39,7 @@ jobs:
         if: runner.os != 'Linux'
 
       - if: ${{ matrix.arch == 'arm64' }}
-        uses: deadsnakes/action@v2.1.1
+        uses: deadsnakes/action@v3.1.0
         with:
           python-version: ${{ matrix.python-version }}
       - if: ${{ matrix.arch != 'amd64' }}
