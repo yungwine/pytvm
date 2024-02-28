@@ -21,7 +21,7 @@ class BinaryDistribution(setuptools.dist.Distribution):
 
 setuptools.setup(
     name="pytvm",
-    version="0.0.3",
+    version="0.0.4",
     author="Maksim Kurbatov",
     author_email="cyrbatoff@gmail.com",
     description="Python TVM emulator",
