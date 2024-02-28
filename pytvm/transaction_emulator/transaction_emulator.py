@@ -1,3 +1,5 @@
+import typing
+
 from ..engine import EmulatorEngine
 from ..utils import cell_to_b64, DEFAULT_CONFIG_BOC
 
@@ -8,7 +10,7 @@ class TransactionEmulator:
 
     def __init__(
             self,
-            config: Cell | str = None,
+            config: typing.Union[Cell, str] = None,
             verbosity_level: int = 0,
             engine: EmulatorEngine = None
     ):

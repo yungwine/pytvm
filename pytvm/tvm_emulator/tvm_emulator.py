@@ -1,3 +1,5 @@
+import typing
+
 from ..engine import EmulatorEngine
 from ..utils import cell_to_b64, get_method_id, b64_to_cell
 
@@ -44,7 +46,7 @@ class TvmEmulator:
     def raw_run_get_method(self, method_id: int, stack: Cell):
         return self.engine.tvm_emulator_run_get_method(self.emulator, method_id, cell_to_b64(stack))
 
-    def run_get_method(self, method: int | str, stack: list):
+    def run_get_method(self, method: typing.Union[int, str], stack: list):
         from pytoniq_core.tlb import VmStack
         if isinstance(method, str):
             method = get_method_id(method)

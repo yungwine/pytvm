@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import typing
 
-from pytoniq_core import ShardAccount, Address
+from pytoniq_core import ShardAccount, Address, Cell
 
 
 class BlockchainApi(ABC):
@@ -11,5 +11,5 @@ class BlockchainApi(ABC):
         ...
 
     @abstractmethod
-    def get_libraries(self, library_list: typing.List[typing.Union[bytes, str]]) -> typing.Dict[str, typing.Optional["Cell"]]:
+    def get_libraries(self, library_list: typing.List[typing.Union[bytes, str]]) -> typing.Dict[str, typing.Optional[Cell]]:
         ...
