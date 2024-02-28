@@ -12,9 +12,11 @@ jobs:
         include:
             - os: ubuntu-latest
               file: libemulator-linux-x86_64.so
-            - os: windows-latest
+            - os: windows-2019
               file: libemulator.dll
-            - os: macos-13
+#            - os: windows-latest - arm
+#              file: libemulator.dll
+            - os: macos-12
               file: libemulator-mac-x86-64.dylib
             - os: macos-latest
               file: libemulator-mac-x86-64.dylib
