@@ -42,7 +42,7 @@ jobs:
         uses: deadsnakes/action@v3.1.0
         with:
           python-version: ${{ matrix.python-version }}
-      - if: ${{ matrix.arch != 'amd64' }}
+      - if: ${{ matrix.arch != 'arm64' }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
