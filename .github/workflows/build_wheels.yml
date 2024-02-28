@@ -14,22 +14,22 @@ jobs:
         include:
           - os: ubuntu-latest
             file: libemulator-linux-x86_64.so
+            arch: x86_64
           - os: windows-2019
             file: libemulator.dll
+            arch: x86_64
           - os: windows-latest
             file: libemulator.dll
+            arch: x86_64
           - os: macos-13
             file: libemulator-mac-x86-64.dylib
+            arch: x86_64
           - os: macos-14
             file: libemulator-mac-x86-64.dylib
+            arch: arm64
 
     steps:
       - uses: actions/checkout@v2
-#      - name: Set up QEMU
-#        if: runner.os == 'Linux'
-#        uses: docker/setup-qemu-action@v1
-#        with:
-#          platforms: all
 
       - name: Download prebuilt  # https://github.com/disintar/tonpy/blob/main/.github/workflows/wheels.yml#L108
         run: |
@@ -37,6 +37,16 @@ jobs:
 
       - uses: actions/checkout@v3
         if: runner.os != 'Linux'
+
+      - if: ${{ matrix.arch == 'arm64' }}
+        uses: deadsnakes/action@v2.1.1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - if: ${{ matrix.arch != 'amd64' }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -53,12 +63,6 @@ jobs:
         run: |
           ls dist
           export FILE=$(pwd)/dist/$(ls dist | grep .whl)
-          
-          if [ -f "$FILE" ]; then
-            echo "$FILE exists."
-          else
-            echo "$FILE does not exist."
-          fi
           
           pip install auditwheel
           python3 -m auditwheel show $FILE
