@@ -39,8 +39,8 @@ jobs:
         if: runner.os != 'Linux'
 
       - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ matrix.os }} != 'macos-14'
         uses: actions/setup-python@v4
+        if: ${{ matrix.os }} != 'macos-14'
         with:
           python-version: ${{ matrix.python-version }}
 
