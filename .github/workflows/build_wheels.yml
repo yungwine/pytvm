@@ -43,8 +43,12 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: |
           brew install python@3.9
-          brew install secp256k1
         if: (matrix.os == 'macos-14') && (matrix.python-version == '3.9')
+
+      - name: Install libs on MacOs14
+        run: |
+          brew install secp256k1 libsodium
+        if: matrix.os == 'macos-14'
 
       - name: Test and build wheels
         if: matrix.os != 'windows-latest'
