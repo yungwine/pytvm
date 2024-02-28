@@ -29,14 +29,11 @@ jobs:
             arch: arm64
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download prebuilt  # https://github.com/disintar/tonpy/blob/main/.github/workflows/wheels.yml#L108
         run: |
           curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/neodix42/ton/releases/latest/download/${{ matrix.file }}
-
-      - uses: actions/checkout@v3
-        if: runner.os != 'Linux'
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
