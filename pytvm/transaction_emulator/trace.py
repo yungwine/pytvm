@@ -56,7 +56,7 @@ class TraceEmulator:
         if message.is_external:
             address = message.info.dest
         elif message.is_internal:
-            address = message.info.src
+            address = message.info.dest
         else:
             raise Exception('message should be either internal or external')
 
@@ -82,7 +82,7 @@ class TraceEmulator:
         res = self.transaction_emulator.emulate_transaction(sh.cell, message.serialize())
         result: TraceResult = {
             'transaction': None,
-            'vm_log': res['vm_log'],
+            'vm_log': res.get('vm_log', ''),
             'error': None,
             'children': []
         }
@@ -97,6 +97,6 @@ class TraceEmulator:
             return result
         result['error'] = {
             'message': res['error'],
-            'exit_code': res['vm_exit_code']
+            'exit_code': res.get('vm_exit_code', 0)
         }
         return result
