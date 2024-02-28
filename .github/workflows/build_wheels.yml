@@ -9,6 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-2019, windows-latest, macos-12, macos-13]
         python-version: ["3.10"]
         include:
           - os: ubuntu-latest
@@ -19,7 +20,7 @@ jobs:
             file: libemulator.dll
           - os: macos-12
             file: libemulator-mac-x86-64.dylib
-          - os: macos-latest
+          - os: macos-13
             file: libemulator-mac-x86-64.dylib
 
     steps:
