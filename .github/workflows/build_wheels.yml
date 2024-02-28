@@ -3,8 +3,8 @@ name: Build and upload to PyPI
 on:
   push:
     branches: [ "master" ]
-#    tags:
-#     - '*'
+    tags:
+     - '*'
 
 jobs:
   build_wheels:
