@@ -28,7 +28,7 @@ jobs:
 
       - name: Download prebuilt  # https://github.com/disintar/tonpy/blob/main/.github/workflows/wheels.yml#L108
         run: |
-          curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/neodix42/ton/releases/latest/download/${{ matrix.file }}
+          curl -Lo ./pytvm/engine/${{ matrix.file }} https://github.com/yungwine/ton/releases/latest/download/${{ matrix.file }}
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
