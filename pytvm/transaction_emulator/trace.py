@@ -74,7 +74,7 @@ class TraceEmulator:
                 continue
             to_update.append(lib)
         if to_update:
-            self.libs |= self.api.get_libraries(to_update)  # todo: there can be more than 16 libs, need to check this
+            self.libs |= await self.api.get_libraries(to_update)  # todo: there can be more than 16 libs, need to check this
             self.update_set_libs()
 
         # todo: self.transaction_emulator.set_prev_blocks_info(await self.api.get_prev_blocks_info())
