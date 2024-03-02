@@ -55,7 +55,7 @@ jobs:
         run: |
           python${{ matrix.python-version }} -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install build wheel pytest
+          pip install wheel pytest build==1.0.3
           pytest
           python${{ matrix.python-version }} -m build --wheel --sdist
       - name: Build wheels on windows
@@ -63,7 +63,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install build wheel pytest
+          pip install wheel pytest build==1.0.3
           pytest
           python3 -m build --wheel --sdist
 
