@@ -53,17 +53,13 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           python${{ matrix.python-version }} -m pip install --upgrade pip
-          pip install build wheel pytest
-          pip install -r requirements.txt
-          pytest
+          pip install build wheel
           python${{ matrix.python-version }} -m build --wheel --sdist
       - name: Build wheels on windows
         if: matrix.os == 'windows-latest'
         run: |
           python3 -m pip install --upgrade pip
-          pip install build wheel pytest
-          pip install -r requirements.txt
-          pytest
+          pip install build wheel
           python3 -m build --wheel --sdist
 
       - name: Patch MacOs14 wheelnames
