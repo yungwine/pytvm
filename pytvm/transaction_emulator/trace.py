@@ -66,7 +66,8 @@ class TraceEmulator:
             self.current_states[address] = sh
 
         libs = []
-        find_libs(sh.cell, libs)
+        if sh is not None:
+            find_libs(sh.cell, libs)
         find_libs(message.init.serialize(), libs) if message.init is not None else None
         to_update = []
         for lib in libs:
