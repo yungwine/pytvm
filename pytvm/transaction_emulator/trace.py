@@ -3,10 +3,21 @@ import typing
 from .transaction_emulator import TransactionEmulator
 from .blockchain_api import BlockchainApi
 
-from pytoniq_core import Cell, Builder, MessageAny, ShardAccount, Address, HashMap, Transaction
+from pytoniq_core import Cell, Builder, MessageAny, ShardAccount, Address, HashMap, Transaction, begin_cell
 
 
 # most of the logic here is taken from https://github.com/tonkeeper/tongo/blob/master/txemulator/trace.go
+
+
+EMPTY_STATE = (begin_cell()
+               .store_ref(
+                    begin_cell()
+                    .store_bit_int(0)
+                    .end_cell())
+               .store_uint(0, 256)
+               .store_uint(0, 64)
+               .end_cell()
+)
 
 
 class EmulationErrorDescription(typing.TypedDict):
@@ -49,8 +60,8 @@ class TraceEmulator:
             if src is not None:
                 dest.store_uint(0, 2).store_ref(src).store_maybe_ref(None)
         hm = HashMap(256, value_serializer=value_serializer)
-        hm.map = self.libs
-        self.transaction_emulator.set_libs(hm.serialize())
+        hm.map = {int(k, 16): v for k, v in self.libs.items() if v is not None}
+        self.transaction_emulator.set_libs(hm.serialize()) if hm.serialize() is not None else None
 
     async def emulate(self, message: MessageAny):
         if message.is_external:
@@ -79,8 +90,10 @@ class TraceEmulator:
             self.update_set_libs()
 
         # todo: self.transaction_emulator.set_prev_blocks_info(await self.api.get_prev_blocks_info())
-
-        res = self.transaction_emulator.emulate_transaction(sh.cell, message.serialize())
+        if sh is not None:
+            res = self.transaction_emulator.emulate_transaction(sh.cell, message.serialize())
+        else:
+            res = self.transaction_emulator.emulate_transaction(EMPTY_STATE, message.serialize())
         result: TraceResult = {
             'transaction': None,
             'vm_log': res.get('vm_log', ''),
