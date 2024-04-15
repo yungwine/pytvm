@@ -23,7 +23,7 @@ jobs:
           - os: windows-latest
             file: libemulator.dll
           - os: macos-13
-            file: libemulator-mac-x86_64.dylib
+            file: libemulator-mac-x86-64.dylib
           - os: macos-14
             file: libemulator-mac-arm64.dylib
 
