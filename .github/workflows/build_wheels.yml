@@ -54,8 +54,8 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           python${{ matrix.python-version }} -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install wheel pytest build==1.0.3
+          python{{ matrix.python-version }} -m pip install -r requirements.txt
+          python{{ matrix.python-version }} -m pip install wheel pytest build==1.0.3
           pytest
           python${{ matrix.python-version }} -m build --wheel --sdist
       - name: Build wheels on windows
