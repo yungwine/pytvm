@@ -49,11 +49,15 @@ class TraceEmulator:
             self,
             api: BlockchainApi,
             transaction_emulator: TransactionEmulator,
+            limit: int = 100,
     ):
         self.api = api
         self.transaction_emulator = transaction_emulator
         self.current_states: typing.Dict[Address, ShardAccount] = {}  # address -> (ShardAccount)
         self.libs = {}
+        self.counter = 0
+        self.limit = limit
+        self.block = api.last_mc_block
 
     def update_set_libs(self):
         def value_serializer(dest: Builder, src: Cell):
@@ -64,6 +68,9 @@ class TraceEmulator:
         self.transaction_emulator.set_libs(hm.serialize()) if hm.serialize() is not None else None
 
     async def emulate(self, message: MessageAny):
+        if self.counter >= self.limit:
+            raise Exception('Trace emulation recursion limit exceeded')
+
         if message.is_external:
             address = message.info.dest
         elif message.is_internal:
@@ -73,7 +80,7 @@ class TraceEmulator:
 
         sh = self.current_states.get(address)
         if sh is None:
-            _, sh = await self.api.raw_get_account_state(address)
+            _, sh = await self.api.raw_get_account_state(address, self.block)
             self.current_states[address] = sh
 
         libs = []
@@ -86,7 +93,7 @@ class TraceEmulator:
                 continue
             to_update.append(lib)
         if to_update:
-            self.libs |= await self.api.get_libraries(to_update)  # todo: there can be more than 16 libs, need to check this
+            self.libs |= await self.api.get_libraries(to_update)
             self.update_set_libs()
 
         # todo: self.transaction_emulator.set_prev_blocks_info(await self.api.get_prev_blocks_info())
@@ -94,6 +101,7 @@ class TraceEmulator:
             res = self.transaction_emulator.emulate_transaction(sh.cell, message.serialize())
         else:
             res = self.transaction_emulator.emulate_transaction(EMPTY_STATE, message.serialize())
+        self.counter += 1
         result: TraceResult = {
             'transaction': None,
             'vm_log': res.get('vm_log', ''),
