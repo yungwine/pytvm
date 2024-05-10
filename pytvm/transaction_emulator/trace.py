@@ -3,8 +3,7 @@ import typing
 from .transaction_emulator import TransactionEmulator
 from .blockchain_api import BlockchainApi
 
-from pytoniq_core import Cell, Builder, MessageAny, ShardAccount, Address, HashMap, Transaction, begin_cell
-
+from pytoniq_core import Cell, Builder, MessageAny, ShardAccount, Address, HashMap, Transaction, begin_cell, BlockIdExt
 
 # most of the logic here is taken from https://github.com/tonkeeper/tongo/blob/master/txemulator/trace.go
 
@@ -49,11 +48,22 @@ class TraceEmulator:
             self,
             api: BlockchainApi,
             transaction_emulator: TransactionEmulator,
+            limit: int = 100,
+            block: BlockIdExt = None
     ):
+        """
+        :param api: blockchain api like pytoniq's LiteBalancer or LiteClient
+        :param transaction_emulator: Transaction Emulator instance, can be reused
+        :param limit: trace recursion limit
+        :param block: block take states for accounts from. If None, last masterchain block will be used
+        """
         self.api = api
         self.transaction_emulator = transaction_emulator
         self.current_states: typing.Dict[Address, ShardAccount] = {}  # address -> (ShardAccount)
         self.libs = {}
+        self.counter = 0
+        self.limit = limit
+        self.block = block or api.last_mc_block
 
     def update_set_libs(self):
         def value_serializer(dest: Builder, src: Cell):
@@ -63,7 +73,16 @@ class TraceEmulator:
         hm.map = {int(k, 16): v for k, v in self.libs.items() if v is not None}
         self.transaction_emulator.set_libs(hm.serialize()) if hm.serialize() is not None else None
 
-    async def emulate(self, message: MessageAny):
+    async def emulate(self, message: MessageAny) -> TraceResult:
+        """
+        Emulates message in the blockchain. Will raise exception if recursion limit is exceeded
+
+        :param message: message to emulate. Must be internal or external in
+        :return:
+        """
+        if self.counter >= self.limit:
+            raise Exception('Trace emulation recursion limit exceeded')
+
         if message.is_external:
             address = message.info.dest
         elif message.is_internal:
@@ -73,7 +92,7 @@ class TraceEmulator:
 
         sh = self.current_states.get(address)
         if sh is None:
-            _, sh = await self.api.raw_get_account_state(address)
+            _, sh = await self.api.raw_get_account_state(address, self.block)
             self.current_states[address] = sh
 
         libs = []
@@ -86,7 +105,7 @@ class TraceEmulator:
                 continue
             to_update.append(lib)
         if to_update:
-            self.libs |= await self.api.get_libraries(to_update)  # todo: there can be more than 16 libs, need to check this
+            self.libs |= await self.api.get_libraries(to_update)
             self.update_set_libs()
 
         # todo: self.transaction_emulator.set_prev_blocks_info(await self.api.get_prev_blocks_info())
@@ -94,6 +113,7 @@ class TraceEmulator:
             res = self.transaction_emulator.emulate_transaction(sh.cell, message.serialize())
         else:
             res = self.transaction_emulator.emulate_transaction(EMPTY_STATE, message.serialize())
+        self.counter += 1
         result: TraceResult = {
             'transaction': None,
             'vm_log': res.get('vm_log', ''),
