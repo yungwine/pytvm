@@ -33,7 +33,9 @@ class TraceResult(typing.TypedDict):
 
 def find_libs(cell: Cell, libs: list):
     if cell.type_ == 2:
-        libs.append(cell.begin_parse().preload_bytes(32))
+        cs = cell.begin_parse()
+        cs.skip_bits(8)
+        libs.append(cs.preload_bytes(32))
         return True
     res = False
     for ref in cell.refs:  # trick to avoid copying, don't repeat this at home
@@ -66,7 +68,7 @@ class TraceEmulator:
         self.block = block or api.last_mc_block
 
     def update_set_libs(self):
-        def value_serializer(dest: Builder, src: Cell):
+        def value_serializer(src: Cell, dest: Builder):
             if src is not None:
                 dest.store_uint(0, 2).store_ref(src).store_maybe_ref(None)
         hm = HashMap(256, value_serializer=value_serializer)
