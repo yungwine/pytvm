@@ -3,6 +3,8 @@ import typing
 from ..engine import EmulatorEngine
 from ..utils import cell_to_b64, get_method_id, b64_to_cell
 
+from typing import Union
+
 from pytoniq_core import Cell, Slice
 
 
@@ -10,8 +12,8 @@ class TvmEmulator:
 
     def __init__(
             self,
-            code: Cell,
-            data: Cell,
+            code: Union[Cell, bytes],
+            data: Union[Cell, bytes],
             verbosity_level: int = 0,
             engine: EmulatorEngine = None
     ):
