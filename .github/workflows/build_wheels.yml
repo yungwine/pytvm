@@ -89,12 +89,12 @@ jobs:
           python3 -m auditwheel show $FILE
           python3 -m auditwheel repair $FILE --plat manylinux_2_27_x86_64
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v3
         if: runner.os != 'Linux'
         with:
           path: ./dist/*.whl
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v3
         if: runner.os == 'Linux'
         with:
           path: ./wheelhouse/*.whl
@@ -111,7 +111,7 @@ jobs:
           pip install build==1.0.3
           python -m build --sdist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
 
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
 #    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
