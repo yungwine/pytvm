@@ -1,11 +1,15 @@
 import base64
+from typing import Union
 
 from pytoniq_core import Cell
 from pytoniq_core.crypto.crc import crc16
 
 
-def cell_to_b64(cell: Cell) -> bytes:
-    return base64.b64encode(cell.to_boc())
+def cell_to_b64(cell: Union[Cell, bytes]) -> bytes:
+    if isinstance(cell, Cell):
+        return base64.b64encode(cell.to_boc())
+    else:
+        return cell
 
 
 def b64_to_cell(b64: bytes) -> Cell:
