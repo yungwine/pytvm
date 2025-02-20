@@ -89,15 +89,17 @@ jobs:
           python3 -m auditwheel show $FILE
           python3 -m auditwheel repair $FILE --plat manylinux_2_27_x86_64
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: runner.os != 'Linux'
         with:
           path: ./dist/*.whl
+          merge-multiple: true
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: runner.os == 'Linux'
         with:
           path: ./wheelhouse/*.whl
+          merge-multiple: true
 
   build_sdist:
     name: Build source distribution
@@ -111,16 +113,17 @@ jobs:
           pip install build==1.0.3
           python -m build --sdist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
+          merge-multiple: true
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
 #    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist
